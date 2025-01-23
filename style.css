@@ -1,2 +1,103 @@
 @import url(./modern-normlize.css);
 @import url(./reset.css);
+
+:root {
+  --night-blue: #060d13;
+}
+
+body {
+  background: linear-gradient(
+    135deg,
+    hsla(258, 32%, 88%, 1) 25%,
+    hsla(256, 33%, 62%, 1) 100%
+  );
+}
+
+#container {
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+#title {
+  height: 110px;
+  margin: 0 0 -15px 0;
+}
+
+#player {
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  color: #fa61a1;
+  &::placeholder {
+    text-align: center;
+    color: #fa61a1;
+  }
+
+  &:focus {
+    outline: none;
+    border: 2px solid #faa0c6;
+  }
+}
+
+#symbol-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 190px;
+  height: 40px;
+  background-color: white;
+  font-size: 1.5rem;
+  border-radius: 5px;
+  border: transparent;
+  color: #ff0a70;
+}
+
+#board {
+  position: relative;
+  height: 400px;
+  width: 400px;
+  /* background-color: rgba(0, 0, 255, 0.4);
+  border-radius: 10px; */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+
+  svg {
+    filter: drop-shadow(0 0 1vmin #a0ced9)
+      drop-shadow(0 -0.25vmin 0.25vmin rgb(140, 29, 237))
+      drop-shadow(0 0 0.5vmin hsla(0, 0%, 90%, 0.5));
+  }
+}
+
+#line-1 {
+  position: absolute;
+  left: calc((400px / 3) - 7px);
+}
+
+#line-2 {
+  position: absolute;
+  left: calc(2 * ((400px / 3)) - 7px);
+}
+
+#line-3 {
+  position: absolute;
+  top: -65px;
+  left: 193px;
+  transform: rotate(90deg);
+}
+
+#line-4 {
+  position: absolute;
+  top: 68px;
+  left: 193px;
+  transform: rotate(90deg);
+}

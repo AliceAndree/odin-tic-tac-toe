@@ -1,10 +1,49 @@
 let board = [];
 let chosenType;
 let computerType;
+
 /* Gameboard Initialisation */
 
 const Gameboard = (() => {
   const createGameboard = (squareAmount) => {
+    const htmlBoard = document.querySelector("#board");
+
+    for (let i = 0; i <= 3; i++) {
+      const lineSvg = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "svg"
+      );
+      const linePath = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path"
+      );
+
+      lineSvg.setAttribute("width", "15");
+      lineSvg.setAttribute("height", "400");
+      lineSvg.setAttribute("viewBow", "0 0 15 400");
+      lineSvg.setAttribute("fill", "#F1E3D3");
+
+      linePath.setAttribute("d", "M7.5 393L7.49998 8.00001");
+      linePath.setAttribute("stroke", "white");
+      linePath.setAttribute("stroke-width", "15");
+      linePath.setAttribute("stroke-linecap", "round");
+
+      lineSvg.appendChild(linePath);
+      htmlBoard.appendChild(lineSvg);
+    }
+
+    const svgLines = htmlBoard.getElementsByTagName("svg");
+    for (let i = 0; i < svgLines.length; i++) {
+      svgLines[i].id = `line-${i + 1}`;
+    }
+
+    for (let i = 0; i <= 8; i++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.setAttribute(`id`, `cell-${i + 1}`);
+      htmlBoard.appendChild(cell);
+    }
+
     for (let i = 0; i < squareAmount; i++) {
       board[i] = [];
       for (let j = 0; j < squareAmount; j++) {
@@ -36,6 +75,16 @@ const Player = (() => {
 })();
 
 const GameFlow = (() => {
+  const cells = document.querySelectorAll(".cell");
+
+  cells.forEach((cell) => {
+    cell.addEventListener("click", () => {
+      const cellId = cell.id;
+      console.log(cellId); // REMOVE
+      return cellId;
+    });
+  });
+
   const humanPlayGame = (row, column) => {
     if (!board[row][column]) {
       board[row][column] = chosenType;
@@ -43,7 +92,6 @@ const GameFlow = (() => {
     } else {
       console.log(`Please choose another box`);
     }
-
     return board;
   };
 
@@ -112,7 +160,7 @@ const GameFlow = (() => {
         firstRow[2] === secondRow[2] &&
         firstRow[2] === thirdRow[2])
     ) {
-      getWinner(third[2]);
+      getWinner(thirdRow[2]);
     } else if (
       // diagonal from bottom left to upper right wins
       thirdRow[0] !== null &&
