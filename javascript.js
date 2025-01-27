@@ -45,14 +45,6 @@ const Gameboard = (() => {
       cell.setAttribute(`id`, `cell-${i + 1}`);
       htmlBoard.appendChild(cell);
     }
-
-    for (let i = 0; i < squareAmount; i++) {
-      board[i] = [];
-      for (let j = 0; j < squareAmount; j++) {
-        board[i][j] = null;
-      }
-    }
-    return board;
   };
 
   const createSymbols = () => {
@@ -122,17 +114,30 @@ const Player = (() => {
   const buttons = document
     .querySelector("#symbol-buttons")
     .querySelectorAll("button");
+  const cells = document.querySelectorAll(".cell");
   buttons.forEach((button) => {
     button.addEventListener("click", (e) => {
-      buttons.forEach((button) => button.classList.remove("active"));
-      button.classList.add("active");
-      chosenType = e.target.value;
-      if (chosenType === "x") {
-        chosenType = cross;
-        computerType = circle;
-      } else {
-        chosenType = circle;
-        computerType = cross;
+      if (
+        !cells[0].innerHTML &&
+        !cells[1].innerHTML &&
+        !cells[2].innerHTML &&
+        !cells[3].innerHTML &&
+        !cells[4].innerHTML &&
+        !cells[5].innerHTML &&
+        !cells[6].innerHTML &&
+        !cells[7].innerHTML &&
+        !cells[8].innerHTML
+      ) {
+        buttons.forEach((button) => button.classList.remove("active"));
+        button.classList.add("active");
+        chosenType = e.target.value;
+        if (chosenType === "x") {
+          chosenType = cross;
+          computerType = circle;
+        } else {
+          chosenType = circle;
+          computerType = cross;
+        }
       }
     });
   });
@@ -141,7 +146,11 @@ const Player = (() => {
 const GameFlow = (() => {
   let playerWins = false;
   let computerWins = false;
+  const resetButton = document.querySelector("#reset-button");
   const cells = document.querySelectorAll(".cell");
+  const modal = document.querySelector("#modal");
+  const winner = document.querySelector("#winner");
+
   cells.forEach((cell) => {
     cell.addEventListener("click", () => {
       if (cell.innerHTML === "") {
@@ -178,14 +187,15 @@ const GameFlow = (() => {
         cells[8].innerHTML
       ) {
         if (playerWins === false && computerWins === false)
-          console.log("It's a Draw");
+          winner.textContent = "It's a Draw";
+        modal.showModal();
+        resetGame();
       } else {
         checkEmptyBox();
       }
       win();
     }
     checkEmptyBox();
-    return board;
   };
 
   function win() {
@@ -243,30 +253,37 @@ const GameFlow = (() => {
       boardElement = boardElement.childNodes[0];
 
       if (boardElement.isEqualNode(chosenType)) {
-        console.log(`You Won !!`);
         playerWins = true;
+        winner.textContent = "You Win";
       } else {
-        console.log("Computer Won");
         computerWins = true;
+        winner.textContent = "Computer Wins";
       }
+      setTimeout(function () {
+        modal.showModal();
+        resetGame();
+      }, 1000);
     }
   }
-
-  const resetButton = document.querySelector("#reset-button");
 
   function resetGame() {
     cells.forEach((cell) => {
       cell.innerHTML = "";
     });
-
-    setTimeout(() => {
-      resetButton.classList.remove("active");
-    }, 200);
+    playerWins = false;
+    computerWins = false;
   }
 
   resetButton.addEventListener("click", () => {
     resetButton.classList.add("active");
+    setTimeout(() => {
+      resetButton.classList.remove("active");
+    }, 200);
     resetGame();
+  });
+
+  modal.addEventListener("click", () => {
+    modal.close();
   });
 
   return { computerPlayGame };
