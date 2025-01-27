@@ -101,3 +101,9 @@ button {
   left: 193px;
   transform: rotate(90deg);
 }
+
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

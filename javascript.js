@@ -1,4 +1,5 @@
-let board = [];
+let circle;
+let cross;
 let chosenType;
 let computerType;
 
@@ -52,131 +53,196 @@ const Gameboard = (() => {
     }
     return board;
   };
-  return { createGameboard };
+
+  const createSymbols = () => {
+    circle = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const circlePath = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "circle"
+    );
+
+    circle.setAttribute("width", "93");
+    circle.setAttribute("height", "93");
+    circle.setAttribute("viewBox", "0 0 93 93");
+    circle.setAttribute("fill", "none");
+
+    circlePath.setAttribute("cx", "46.5");
+    circlePath.setAttribute("cy", "46.5");
+    circlePath.setAttribute("r", "39");
+    circlePath.setAttribute("stroke", "#99C1B9");
+    circlePath.setAttribute("stroke-width", "15");
+
+    circle.appendChild(circlePath);
+
+    cross = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const crossPathOne = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    const crossPathTwo = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+
+    cross.setAttribute("width", "93");
+    cross.setAttribute("height", "94");
+    cross.setAttribute("viewBox", "0 0 93 94");
+    cross.setAttribute("fill", "none");
+
+    crossPathOne.setAttribute("d", "M8.41272 8L85.1746 84.7619");
+    crossPathOne.setAttribute("stroke", "#D88C9A");
+    crossPathOne.setAttribute("stroke-width", "15");
+    crossPathOne.setAttribute("stroke-linecap", "round");
+
+    crossPathTwo.setAttribute("d", "M84.762 9.2381L8.00006 86");
+    crossPathTwo.setAttribute("stroke", "#D88C9A");
+    crossPathTwo.setAttribute("stroke-width", "15");
+    crossPathTwo.setAttribute("stroke-linecap", "round");
+
+    cross.appendChild(crossPathOne);
+    cross.appendChild(crossPathTwo);
+
+    chosenType = cross;
+    computerType = circle;
+
+    return circle, cross, chosenType;
+  };
+  return { createGameboard, createSymbols };
 })();
 
 Gameboard.createGameboard(3);
+Gameboard.createSymbols();
 
 /* Player Instance */
 
 const Player = (() => {
   const buttons = document.querySelectorAll("button");
-
   buttons.forEach((button) => {
     button.addEventListener("click", (e) => {
       chosenType = e.target.value;
       if (chosenType === "x") {
-        computerType = "o";
+        chosenType = cross;
+        computerType = circle;
       } else {
-        computerType = "x";
+        chosenType = circle;
+        computerType = cross;
       }
     });
   });
 })();
 
 const GameFlow = (() => {
+  let playerWins = false;
+  let computerWins = false;
   const cells = document.querySelectorAll(".cell");
-
   cells.forEach((cell) => {
     cell.addEventListener("click", () => {
-      const cellId = cell.id;
-      console.log(cellId); // REMOVE
-      return cellId;
+      if (cell.innerHTML === "") {
+        const cellId = cell.id;
+        let curentCell = document.querySelector(`#${cellId}`);
+        const symbol = chosenType.cloneNode(true);
+        curentCell.appendChild(symbol);
+
+        if (!win() && !playerWins) {
+          computerPlayGame();
+        }
+      }
     });
   });
 
-  const humanPlayGame = (row, column) => {
-    if (!board[row][column]) {
-      board[row][column] = chosenType;
-      return computerPlayGame();
-    } else {
-      console.log(`Please choose another box`);
-    }
-    return board;
-  };
-
   const computerPlayGame = () => {
+    const cells = document.querySelectorAll(".cell");
     function checkEmptyBox() {
-      const randomRowIndex = Math.floor(Math.random() * 3);
-      const randomColumnIndex = Math.floor(Math.random() * 3);
+      const randomId = Math.floor(Math.random() * 9) + 1;
+      const randomCell = document.querySelector(`#cell-${randomId}`);
 
-      if (!board[randomRowIndex][randomColumnIndex]) {
-        board[randomRowIndex][randomColumnIndex] = computerType;
-        win();
+      if (randomCell.innerHTML === "") {
+        const symbol = computerType.cloneNode(true);
+        randomCell.appendChild(symbol);
       } else if (
-        !board[0].includes(null) &&
-        !board[1].includes(null) &&
-        !board[2].includes(null)
+        cells[0].innerHTML &&
+        cells[1].innerHTML &&
+        cells[2].innerHTML &&
+        cells[3].innerHTML &&
+        cells[4].innerHTML &&
+        cells[5].innerHTML &&
+        cells[6].innerHTML &&
+        cells[7].innerHTML &&
+        cells[8].innerHTML
       ) {
-        win();
+        if (playerWins === false && computerWins === false)
+          console.log("It's a Draw");
       } else {
-        console.log(`board[${randomRowIndex}][${randomColumnIndex}]`);
         checkEmptyBox();
-        win();
       }
+      win();
     }
     checkEmptyBox();
     return board;
   };
 
   function win() {
-    const firstRow = board[0];
-    const secondRow = board[1];
-    const thirdRow = board[2];
-
     if (
       // first row wins
-      (!firstRow.includes(null) &&
-        firstRow[0] === firstRow[1] &&
-        firstRow[0] === firstRow[2]) ||
+      (cells[0].innerHTML &&
+        cells[0].innerHTML === cells[1].innerHTML &&
+        cells[0].innerHTML === cells[2].innerHTML) ||
       // first column wins
-      (firstRow[0] !== null &&
-        firstRow[0] === secondRow[0] &&
-        firstRow[0] === thirdRow[0]) ||
+      (cells[0].innerHTML &&
+        cells[0].innerHTML === cells[3].innerHTML &&
+        cells[0].innerHTML === cells[6].innerHTML) ||
       // diagonal from upper left to bottom right wins
-      (firstRow[0] !== null &&
-        firstRow[0] === secondRow[1] &&
-        firstRow[0] === thirdRow[2])
+      (cells[0].innerHTML &&
+        cells[0].innerHTML === cells[4].innerHTML &&
+        cells[0].innerHTML === cells[8].innerHTML)
     ) {
-      getWinner(firstRow[0]);
+      getWinner(cells[0]);
+      return true;
     } else if (
       // second row wins
-      (!secondRow.includes(null) &&
-        secondRow[0] === secondRow[1] &&
-        secondRow[0] === secondRow[2]) ||
+      (cells[3].innerHTML &&
+        cells[3].innerHTML === cells[4].innerHTML &&
+        cells[3].innerHTML === cells[5].innerHTML) ||
       // second column wins
-      (firstRow[1] !== null &&
-        firstRow[1] === secondRow[1] &&
-        firstRow[1] === thirdRow[1])
+      (cells[1].innerHTML &&
+        cells[1].innerHTML === cells[4].innerHTML &&
+        cells[1].innerHTML === cells[7].innerHTML)
     ) {
-      getWinner(secondRow[1]);
+      getWinner(cells[4]);
+      return true;
     } else if (
       // third row wins
-      (!thirdRow.includes(null) &&
-        thirdRow[0] === thirdRow[1] &&
-        thirdRow[0] === thirdRow[2]) ||
+      (cells[6].innerHTML &&
+        cells[6].innerHTML === cells[7].innerHTML &&
+        cells[6].innerHTML === cells[8].innerHTML) ||
       // third column wins
-      (firstRow[2] !== null &&
-        firstRow[2] === secondRow[2] &&
-        firstRow[2] === thirdRow[2])
+      (cells[2].innerHTML &&
+        cells[2].innerHTML === cells[5].innerHTML &&
+        cells[2].innerHTML === cells[8].innerHTML)
     ) {
-      getWinner(thirdRow[2]);
+      getWinner(cells[8]);
+      return true;
     } else if (
       // diagonal from bottom left to upper right wins
-      thirdRow[0] !== null &&
-      thirdRow[0] === secondRow[1] &&
-      thirdRow[0] === firstRow[2]
+      cells[6].innerHTML &&
+      cells[6].innerHTML === cells[4].innerHTML &&
+      cells[6].innerHTML === cells[2].innerHTML
     ) {
-      getWinner(thirdRow[0]);
+      getWinner(cells[6]);
+      return true;
     }
+
     function getWinner(boardElement) {
-      if (boardElement === chosenType) {
+      boardElement = boardElement.childNodes[0];
+
+      if (boardElement.isEqualNode(chosenType)) {
         console.log(`You Won !!`);
+        playerWins = true;
       } else {
         console.log("Computer Won");
+        computerWins = true;
       }
     }
   }
-
-  return { humanPlayGame, computerPlayGame };
+  return { computerPlayGame };
 })();
