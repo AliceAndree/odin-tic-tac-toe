@@ -19,6 +19,7 @@ const Gameboard = (() => {
         "path"
       );
 
+      lineSvg.classList.add("line");
       lineSvg.setAttribute("width", "15");
       lineSvg.setAttribute("height", "400");
       lineSvg.setAttribute("viewBow", "0 0 15 400");
@@ -61,6 +62,7 @@ const Gameboard = (() => {
       "circle"
     );
 
+    circle.classList.add("circle");
     circle.setAttribute("width", "93");
     circle.setAttribute("height", "93");
     circle.setAttribute("viewBox", "0 0 93 93");
@@ -69,7 +71,7 @@ const Gameboard = (() => {
     circlePath.setAttribute("cx", "46.5");
     circlePath.setAttribute("cy", "46.5");
     circlePath.setAttribute("r", "39");
-    circlePath.setAttribute("stroke", "#99C1B9");
+    circlePath.setAttribute("stroke", "#21D4B0");
     circlePath.setAttribute("stroke-width", "15");
 
     circle.appendChild(circlePath);
@@ -84,18 +86,19 @@ const Gameboard = (() => {
       "path"
     );
 
+    cross.classList.add("cross");
     cross.setAttribute("width", "93");
     cross.setAttribute("height", "94");
     cross.setAttribute("viewBox", "0 0 93 94");
     cross.setAttribute("fill", "none");
 
     crossPathOne.setAttribute("d", "M8.41272 8L85.1746 84.7619");
-    crossPathOne.setAttribute("stroke", "#D88C9A");
+    crossPathOne.setAttribute("stroke", "#fa61a1");
     crossPathOne.setAttribute("stroke-width", "15");
     crossPathOne.setAttribute("stroke-linecap", "round");
 
     crossPathTwo.setAttribute("d", "M84.762 9.2381L8.00006 86");
-    crossPathTwo.setAttribute("stroke", "#D88C9A");
+    crossPathTwo.setAttribute("stroke", "#fa61a1");
     crossPathTwo.setAttribute("stroke-width", "15");
     crossPathTwo.setAttribute("stroke-linecap", "round");
 
@@ -116,9 +119,13 @@ Gameboard.createSymbols();
 /* Player Instance */
 
 const Player = (() => {
-  const buttons = document.querySelectorAll("button");
+  const buttons = document
+    .querySelector("#symbol-buttons")
+    .querySelectorAll("button");
   buttons.forEach((button) => {
     button.addEventListener("click", (e) => {
+      buttons.forEach((button) => button.classList.remove("active"));
+      button.classList.add("active");
       chosenType = e.target.value;
       if (chosenType === "x") {
         chosenType = cross;
@@ -244,5 +251,23 @@ const GameFlow = (() => {
       }
     }
   }
+
+  const resetButton = document.querySelector("#reset-button");
+
+  function resetGame() {
+    cells.forEach((cell) => {
+      cell.innerHTML = "";
+    });
+
+    setTimeout(() => {
+      resetButton.classList.remove("active");
+    }, 200);
+  }
+
+  resetButton.addEventListener("click", () => {
+    resetButton.classList.add("active");
+    resetGame();
+  });
+
   return { computerPlayGame };
 })();

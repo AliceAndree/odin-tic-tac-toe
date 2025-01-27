@@ -43,11 +43,6 @@ body {
   }
 }
 
-#symbol-buttons {
-  display: flex;
-  gap: 20px;
-}
-
 button {
   display: flex;
   justify-content: center;
@@ -61,21 +56,51 @@ button {
   color: #ff0a70;
 }
 
+#symbol-buttons {
+  display: flex;
+  gap: 20px;
+
+  .active {
+    box-shadow: none;
+    border: 2px solid white;
+    transform: translateY(4px);
+  }
+}
+
+#cross-button {
+  background-color: #fa61a1;
+  color: white;
+  box-shadow: 5px 5px 10px rgba(106, 41, 68, 0.5);
+}
+
+#circle-button {
+  background-color: #21d4b0;
+  color: white;
+  box-shadow: 5px 5px 10px rgba(12, 81, 67, 0.5);
+}
+
+#reset-button {
+  box-shadow: 5px 5px 10px rgba(106, 41, 68, 0.5);
+
+  &.active {
+    box-shadow: none;
+    transform: translateY(4px);
+  }
+}
+
 #board {
   position: relative;
   height: 400px;
   width: 400px;
-  /* background-color: rgba(0, 0, 255, 0.4);
-  border-radius: 10px; */
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
+}
 
-  svg {
-    filter: drop-shadow(0 0 1vmin #a0ced9)
-      drop-shadow(0 -0.25vmin 0.25vmin rgb(140, 29, 237))
-      drop-shadow(0 0 0.5vmin hsla(0, 0%, 90%, 0.5));
-  }
+.line {
+  filter: drop-shadow(0 0 1vmin #a0ced9)
+    drop-shadow(0 -0.25vmin 0.25vmin rgb(140, 29, 237))
+    drop-shadow(0 0 0.5vmin hsla(0, 0%, 90%, 0.5));
 }
 
 #line-1 {
@@ -106,4 +131,16 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.cross {
+  filter: drop-shadow(0 0 0.1vmin #f8dce5)
+    drop-shadow(0 -0.25vmin 0.25vmin rgb(252, 201, 212))
+    drop-shadow(0 0 0.5vmin hsla(0, 9%, 98%, 0.5));
+}
+
+.circle {
+  filter: drop-shadow(0 0 0.1vmin #dcf8de)
+    drop-shadow(0 -0.25vmin 0.25vmin rgb(201, 252, 219))
+    drop-shadow(0 0 0.5vmin hsla(0, 9%, 98%, 0.5));
 }
