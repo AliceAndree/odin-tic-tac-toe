@@ -6,7 +6,7 @@ let computerType;
 /* Gameboard Initialisation */
 
 const Gameboard = (() => {
-  const createGameboard = (squareAmount) => {
+  const createGameboard = () => {
     const htmlBoard = document.querySelector("#board");
 
     for (let i = 0; i <= 3; i++) {
@@ -111,6 +111,11 @@ Gameboard.createSymbols();
 /* Player Instance */
 
 const Player = (() => {
+  const getPlayerName = () => {
+    const playerName = document.querySelector("#player").value;
+    return playerName;
+  };
+
   const buttons = document
     .querySelector("#symbol-buttons")
     .querySelectorAll("button");
@@ -141,6 +146,7 @@ const Player = (() => {
       }
     });
   });
+  return { getPlayerName };
 })();
 
 const GameFlow = (() => {
@@ -188,8 +194,10 @@ const GameFlow = (() => {
       ) {
         if (playerWins === false && computerWins === false)
           winner.textContent = "It's a Draw";
-        modal.showModal();
-        resetGame();
+        setTimeout(function () {
+          modal.showModal();
+          resetGame();
+        }, 500);
       } else {
         checkEmptyBox();
       }
@@ -254,7 +262,11 @@ const GameFlow = (() => {
 
       if (boardElement.isEqualNode(chosenType)) {
         playerWins = true;
-        winner.textContent = "You Win";
+        if (Player.getPlayerName()) {
+          winner.textContent = `${Player.getPlayerName()} Wins`;
+        } else {
+          winner.textContent = "You Win";
+        }
       } else {
         computerWins = true;
         winner.textContent = "Computer Wins";
@@ -262,7 +274,7 @@ const GameFlow = (() => {
       setTimeout(function () {
         modal.showModal();
         resetGame();
-      }, 1000);
+      }, 500);
     }
   }
 
@@ -270,6 +282,7 @@ const GameFlow = (() => {
     cells.forEach((cell) => {
       cell.innerHTML = "";
     });
+    document.querySelector("#player").value = "";
     playerWins = false;
     computerWins = false;
   }
